@@ -1,0 +1,27 @@
+{
+    "name": "plumber/plumber",
+    "description": "A library for consumer queuse data use workerman",
+    "keywords": [
+        "yii2",
+        "workerman",
+        "consumer",
+        "plumber"
+    ],
+    "type": "library",
+    "authors": [
+        {
+            "name": "nic"
+        }
+    ],
+    "require": {
+        "php": ">= 5.5",
+        "aws/aws-sdk-php": "^3.209",
+        "php-amqplib/php-amqplib": "^3.4",
+        "workerman/workerman": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "plumber\\plumber\\": "Provider"
+        }
+    }
+}
