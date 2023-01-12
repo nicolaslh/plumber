@@ -50,14 +50,14 @@ class plumber
         if (empty($config["provider"])) {
             throw new \Exception("provider can't empty");
         }
-
-        if (!in_array($config["provider"], provider_support)) {
+        if (!in_array($config["provider"], define::PROVIDER_SUPPORT)) {
             throw new \Exception($config["provider"] . " is not support");
         }
         $this->provider = $config["provider"];
         $this->config = $config;
         $consumer = new Worker();
         $this->consumer = $consumer;
+        $this->getQueueClient();
     }
 
     public function Run()
@@ -83,14 +83,19 @@ class plumber
     public function Receiver()
     {
         switch ($this->provider) {
-            case RabbitMQ:
+            case define::RabbitMQ:
                 $data = $this->_queueClient->receive($this->queueName, $this->callback);
                 break;
-            case SQS:
+            case define::SQS:
             default:
-                $data = $this->_queueClient->receive();
-                if ($this->ExecCallback($data["Body"])) {
-                    $this->_queueClient->delete($data["ReceiptHandle"]);
+                while (1) {
+                    $data = $this->_queueClient->receive();
+                    if (!$data) {
+                        continue;
+                    }
+                    if ($this->ExecCallback($data["Body"])) {
+                        $this->_queueClient->delete($data["ReceiptHandle"]);
+                    }
                 }
                 break;
         }
@@ -104,12 +109,12 @@ class plumber
     public function getQueueClient()
     {
         switch ($this->provider) {
-            case RabbitMQ:
+            case define::RabbitMQ:
                 $this->_queueClient = new RabbitMQ($this->config);
                 break;
-            case SQS:
+            case define::SQS:
             default:
-                $this->_queueClient = new SQS($this->config);
+                $this->_queueClient = new SQS($this->queueName, $this->config);
                 break;
         }
 
@@ -123,8 +128,8 @@ class plumber
         return $this->_queueClient->delete($message);
     }
 
-    public function __destruct()
-    {
-        $this->_queueClient->shutdown();
-    }
+    // public function __destruct()
+    // {
+    //     $this->_queueClient->shutdown();
+    // }
 }

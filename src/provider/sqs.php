@@ -39,8 +39,9 @@ class SQS
     protected $sqs_client;
 
 
-    public function __construct($config = [])
+    public function __construct($queuename, $config = [])
     {
+        $this->name = $queuename;
         $aws_credentials = self::_config($config);
         $this->sqs_client = new SqsClient($aws_credentials);
     }

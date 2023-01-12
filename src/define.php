@@ -2,10 +2,13 @@
 
 namespace Plumber\Plumber;
 
-const SQS = "sqs";
-const RabbitMQ = "RabbitMQ";
+class define
+{
+    const SQS = "SQS";
+    const RabbitMQ = "RabbitMQ";
 
-const provider_support = [
-    SQS,
-    RabbitMQ,
-];
+    const PROVIDER_SUPPORT = [
+        self::SQS,
+        self::RabbitMQ,
+    ];
+}
