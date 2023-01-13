@@ -15,15 +15,9 @@ class RabbitMQ
 
     public function __construct($config)
     {
+        //$this->connection = new AMQPSSLConnection($host, $port, $user, $password, $vhost, ['verify_peer_name' => false], [], 'ssl');
         $this->connection = new AMQPSSLConnection(
-            $config['rabbitmq']['host'],
-            $config['rabbitmq']['port'],
-            $config['rabbitmq']['login'],
-            $config['rabbitmq']['password'],
-            $config['rabbitmq']['vhost'],
-            ['verify_peer_name' => false],
-            [],
-            'ssl'
+            $config['rabbitmq']['host'], $config['rabbitmq']['port'], $config['rabbitmq']['login'], $config['rabbitmq']['password'], $config['rabbitmq']['vhost'], ['verify_peer_name' => false], [], 'ssl'
         );
         $this->channel = $this->connection->channel();
     }
