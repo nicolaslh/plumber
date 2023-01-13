@@ -16,7 +16,7 @@ use Workerman\Worker;
 class plumber
 {
 
-    public $callback;
+    public static $callback;
     public $queueName;
     /**
      * 队列提供商
@@ -46,7 +46,7 @@ class plumber
     public function __construct($queueName, $callback, $config = [])
     {
         $this->queueName = $queueName;
-        $this->callback = $callback;
+        self::$callback = $callback;
         if (empty($config["provider"])) {
             throw new \Exception("provider can't empty");
         }
@@ -84,7 +84,7 @@ class plumber
     {
         switch ($this->provider) {
             case define::RabbitMQ:
-                $data = $this->_queueClient->receive($this->queueName, $this->callback);
+                $data = $this->_queueClient->receive($this->queueName, "Plumber\Plumber\plumber::HandleAMQCallback");
                 break;
             case define::SQS:
             default:
@@ -101,9 +101,17 @@ class plumber
         }
     }
 
+    public static function HandleAMQCallback($amqRawData)
+    {
+        $result = call_user_func(self::$callback, $amqRawData->getBody());
+        if ($result) {
+            $amqRawData->ack();
+        }
+    }
+
     public function ExecCallback($data)
     {
-        return call_user_func($this->callback, $data);
+        return call_user_func(self::$callback, $data);
     }
 
     public function getQueueClient()

@@ -37,7 +37,10 @@ class RabbitMQ
     public function receive($queueName, $callback)
     {
         $this->channel->queue_declare($queueName, false, false, false, false);
-        $this->channel->basic_consume($queueName, '', false, true, false, false, $callback);
+        $this->channel->basic_consume($queueName, '', false, false, false, false, $callback);
+        while (count($this->channel->callbacks)) {
+            $this->channel->wait();
+        }
     }
 
     /**
