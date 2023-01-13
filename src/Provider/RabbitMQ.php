@@ -19,7 +19,10 @@ class RabbitMQ
             $config['rabbitmq']['port'],
             $config['rabbitmq']['login'],
             $config['rabbitmq']['password'],
-            $config['rabbitmq']['vhost']
+            $config['rabbitmq']['vhost'],
+            ['verify_peer_name' => false],
+            [],
+            'ssl'
         );
         $this->channel = $this->connection->channel();
     }
