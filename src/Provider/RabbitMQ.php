@@ -2,6 +2,7 @@
 
 namespace Plumber\Plumber\Provider;
 
+use PhpAmqpLib\Connection\AMQPSSLConnection;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Connection;
@@ -14,7 +15,7 @@ class RabbitMQ
 
     public function __construct($config)
     {
-        $this->connection = new AMQPStreamConnection(
+        $this->connection = new AMQPSSLConnection(
             $config['rabbitmq']['host'],
             $config['rabbitmq']['port'],
             $config['rabbitmq']['login'],
