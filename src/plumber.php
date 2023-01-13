@@ -84,16 +84,19 @@ class plumber
     {
         switch ($this->provider) {
             case define::RabbitMQ:
+                print_r("RabbitMQ comsuming...");
                 $data = $this->_queueClient->receive($this->queueName, "Plumber\Plumber\plumber::HandleAMQCallback");
                 break;
             case define::SQS:
             default:
+                print_r("SQS comsuming...");
                 while (1) {
                     $data = $this->_queueClient->receive();
                     if (!$data) {
                         continue;
                     }
                     $result = $this->ExecCallback($data["Body"]);
+                    print_r(self::$callback. " exec result: ". json_encode($result));
                     if (isset($result["msg"]) && $result["msg"] == "success") {
                         $this->_queueClient->delete($data["ReceiptHandle"]);
                     }
@@ -104,7 +107,10 @@ class plumber
 
     public static function HandleAMQCallback($amqRawData)
     {
-        $result = call_user_func(self::$callback, $amqRawData->getBody());
+        $body = $amqRawData->getBody();
+        print_r("receive data: {$body}");
+        $result = call_user_func(self::$callback, $body);
+        print_r(self::$callback. " exec result: ". json_encode($result));
         if (isset($result["msg"]) && $result["msg"] == "success") {
             $amqRawData->ack();
         }
@@ -112,6 +118,7 @@ class plumber
 
     public function ExecCallback($data)
     {
+        print_r("receive data: {$data}");
         return call_user_func(self::$callback, $data);
     }
 

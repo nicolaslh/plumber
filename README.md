@@ -38,3 +38,21 @@ callback函数返回数据格式
 ["msg" => "success"]
 ```
 注意: <strong>只要当msg为`successs`时, 程序才会从队列中移除已经处理的消息</strong>
+
+## run
+```shell
+Usage: php yourfile <command> [mode]
+Commands: 
+start           Start worker in DEBUG mode.
+                Use mode -d to start in DAEMON mode.
+stop            Stop worker.
+                Use mode -g to stop gracefully.
+restart         Restart workers.
+                Use mode -d to start in DAEMON mode.
+                Use mode -g to stop gracefully.
+reload          Reload codes.
+                Use mode -g to reload gracefully.
+status          Get worker status.
+                Use mode -d to show live status.
+connections     Get worker connections.
+```
