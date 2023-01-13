@@ -93,7 +93,8 @@ class plumber
                     if (!$data) {
                         continue;
                     }
-                    if ($this->ExecCallback($data["Body"])) {
+                    $result = $this->ExecCallback($data["Body"]);
+                    if (isset($result["msg"]) && $result["msg"] == "success") {
                         $this->_queueClient->delete($data["ReceiptHandle"]);
                     }
                 }
@@ -104,7 +105,7 @@ class plumber
     public static function HandleAMQCallback($amqRawData)
     {
         $result = call_user_func(self::$callback, $amqRawData->getBody());
-        if ($result) {
+        if (isset($result["msg"]) && $result["msg"] == "success") {
             $amqRawData->ack();
         }
     }
