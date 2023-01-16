@@ -9,6 +9,7 @@ namespace Plumber\Plumber;
 //require_once __DIR__ . '/../../Workerman/Autoloader.php';
 use FFI\Exception;
 use Plumber\Plumber\Provider;
+use Plumber\Plumber\Provider\Kafka;
 use Plumber\Plumber\Provider\SQS;
 use Plumber\Plumber\Provider\RabbitMQ;
 use Workerman\Worker;
@@ -141,7 +142,7 @@ class plumber
                 $this->_queueClient = new RabbitMQ($this->config);
                 break;
             case define::Kafka:
-                $this->_queueClient = new RabbitMQ($this->config);
+                $this->_queueClient = new Kafka($this->config);
                 break;
             case define::SQS:
             default:
