@@ -87,6 +87,18 @@ class plumber
                 print_r("RabbitMQ comsuming...");
                 $data = $this->_queueClient->receive($this->queueName, "Plumber\Plumber\plumber::HandleAMQCallback");
                 break;
+            case define::Kafka:
+                print_r("Kafka comsuming...");
+                $data = $this->_queueClient->receive();
+                if (empty($data)) {
+                    continue;
+                }
+                $result = $this->ExecCallback($data);
+                print_r(self::$callback. " exec result: ". json_encode($result));
+                if (isset($result["msg"]) && $result["msg"] == "success") {
+                    // todo ack
+                }
+                break;
             case define::SQS:
             default:
                 print_r("SQS comsuming...");
@@ -126,6 +138,9 @@ class plumber
     {
         switch ($this->provider) {
             case define::RabbitMQ:
+                $this->_queueClient = new RabbitMQ($this->config);
+                break;
+            case define::Kafka:
                 $this->_queueClient = new RabbitMQ($this->config);
                 break;
             case define::SQS:
