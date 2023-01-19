@@ -100,17 +100,17 @@ class Kafka
 
             switch ($err) {
                 case RD_KAFKA_RESP_ERR__ASSIGN_PARTITIONS:
-                    info(__METHOD__ . ' rebalance assign callback：' . $partitionStr);
+                    print_r(__METHOD__ . ' rebalance assign callback：' . $partitionStr . PHP_EOL);
                     $kafka->assign($partitions);
                     break;
 
                 case RD_KAFKA_RESP_ERR__REVOKE_PARTITIONS:
-                    info(__METHOD__ . ' rebalance revoke callback：' . $partitionStr);
+                    print_r(__METHOD__ . ' rebalance revoke callback：' . $partitionStr . PHP_EOL);
                     $kafka->assign(NULL);
                     break;
 
                 default:
-                    error(__METHOD__ . ' rebalance unknown callback：' . $err);
+                    print_r(__METHOD__ . ' rebalance unknown callback：' . $err . PHP_EOL);
                     throw new \Exception($err);
             }
         });
@@ -147,16 +147,16 @@ class Kafka
         $message = $this->consumer->consume(120 * 1000);
         switch ($message->err) {
             case RD_KAFKA_RESP_ERR_NO_ERROR:
-                info(__METHOD__ . ' messages : ' . json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                print_r(__METHOD__ . ' messages : ' . json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . PHP_EOL);
                 return $message;
             case RD_KAFKA_RESP_ERR__PARTITION_EOF:
-                info(__METHOD__ . ' No more messages : ' . $message->errstr());
+                print_r(__METHOD__ . ' No more messages : ' . $message->errstr());
                 return null;
             case RD_KAFKA_RESP_ERR__TIMED_OUT:
-                info(__METHOD__ . ' Timeout :' . $message->errstr() . ' code:' . $message->err . PHP_EOL);
+                print_r(__METHOD__ . ' Timeout :' . $message->errstr() . ' code:' . $message->err . PHP_EOL);
                 return null;
             default:
-                error(__METHOD__ . ' Exception :' . $message->errstr() . ' code:' . $message->err . PHP_EOL);
+                print_r(__METHOD__ . ' Exception :' . $message->errstr() . ' code:' . $message->err . PHP_EOL);
                 throw new \Exception(__METHOD__ . ' ' . $message->errstr(), $message->err);
         }
     }
